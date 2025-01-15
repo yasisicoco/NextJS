@@ -2,7 +2,7 @@ import Link from "next/link";
 import { resolve } from "path";
 import Movie from "../../components/movie";
 import styles from "../../styles/home.module.css";
-import { API_URL } from "../../lib";
+import { API_URL } from "../../lib/constants";
 
 export const metadata = {
   title: "home",
