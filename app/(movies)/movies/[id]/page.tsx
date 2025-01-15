@@ -1,14 +1,20 @@
 import { Suspense } from "react";
-import MovieInfo from "../../../../components/movie-info";
+import MovieInfo, { getMovie } from "../../../../components/movie-info";
 import MovieVideos from "../../../../components/movie-videos";
 
-export default async function MovieDetail({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+interface IParams {
+  params: { id: string };
+}
 
+// 동적인 metadata를 받아오는 프레임워크 함수 export를 해야 프레임워크가 찾아서 작동한다다
+export async function generateMetadata({ params: { id } }: IParams) {
+  const movie = await getMovie(id);
+  return {
+    title: movie.title,
+  };
+}
+
+export default async function MovieDetailPage({ params: { id } }: IParams) {
   return (
     <div>
       {/* 로딩상태 분리 */}
