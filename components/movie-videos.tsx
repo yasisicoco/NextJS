@@ -1,33 +1,44 @@
+import { Suspense } from "react";
 import { API_URL } from "../lib/constants";
-import styles from "../styles/movie-videos.module.css";
+import MoreVideos from "./movie-moreVideos";
 
 async function getVideos(id: string) {
-  // await new Promise((resolve) => setTimeout(resolve, 3000));
   const response = await fetch(`${API_URL}/${id}/videos`);
   return response.json();
 }
 
 export default async function MovieVideos({ id }: { id: string }) {
   const videos = await getVideos(id);
+  const recentVideos = videos.slice(0, 3);
+  const remainingVideos = videos.slice(3);
+
   return (
-    <div className={styles.container}>
-      {/* allow 속성 권한:
-      - accelerometer: 모션/방향 감지
-      - autoplay: 자동 재생
-      - clipboard-write: 클립보드 복사
-      - encrypted-media: DRM 보호 콘텐츠
-      - gyroscope: 기기 회전 감지
-      - picture-in-picture: 영상 팝업 모드
-      - allowFullScreen: 풀스크린 허용 */}
-      {videos.map((video) => (
-        <iframe
-          key={video.id}
-          src={`https://youtube.com/embed/${video.key}`}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-midia; gyroscope; picture-in-picture"
-          allowFullScreen
-          title={video.name}
-        />
-      ))}
+    <div className="container mx-auto px-4 py-8">
+      <h2 className="text-2xl font-bold mb-6 text-center">Another Videos</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {recentVideos.map((video) => (
+          <VideoItem key={video.id} video={video} />
+        ))}
+      </div>
+      {remainingVideos.length > 0 && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <MoreVideos videos={remainingVideos} />
+        </Suspense>
+      )}
+    </div>
+  );
+}
+
+function VideoItem({ video }) {
+  return (
+    <div className="aspect-w-16 aspect-h-9">
+      <iframe
+        src={`https://youtube.com/embed/${video.key}`}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        title={video.name}
+        className="w-full h-full rounded-lg shadow-lg"
+      />
     </div>
   );
 }

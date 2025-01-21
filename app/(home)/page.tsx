@@ -1,15 +1,12 @@
 import Link from "next/link";
-import { resolve } from "path";
 import Movie from "../../components/movie";
-import styles from "../../styles/home.module.css";
 import { API_URL } from "../../lib/constants";
 
 export const metadata = {
-  title: "home",
+  title: "홈",
 };
 
 async function getMovies() {
-  // await new Promise((resolve) => setTimeout(resolve, 2000));
   const response = await fetch(API_URL);
   const json = await response.json();
   return json;
@@ -17,17 +14,19 @@ async function getMovies() {
 
 export default async function HomePage() {
   const movies = await getMovies();
-  // return <div>{JSON.stringify(movies)}</div>;
   return (
-    <div className={styles.container}>
-      {movies.map((movie) => (
-        <Movie
-          key={movie.id}
-          id={movie.id}
-          poster_path={movie.poster_path}
-          title={movie.title}
-        />
-      ))}
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-center mb-8">movie</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {movies.map((movie) => (
+          <Movie
+            key={movie.id}
+            id={movie.id}
+            poster_path={movie.poster_path}
+            title={movie.title}
+          />
+        ))}
+      </div>
     </div>
   );
 }
